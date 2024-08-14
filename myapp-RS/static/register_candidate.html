@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Registration</title>
+    <link rel="stylesheet" href="css/register_candidate.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body { 
+            font-family: 'Arial', sans-serif;
+            background: url('/static/images/background1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            padding: 20px;
+            text-align: justify;
+            font-size: 2.5em;
+            color: #258580;
+        }
+        
+        form {
+            background: #258580;
+            padding: 20px;
+            margin-top: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            font-size: 1em;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        button:hover {
+            background: #6a11cb;
+        }
+        
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: red;
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+    <form id="registrationForm" action="/submit_candidate_registration" method="POST" enctype="multipart/form-data">
+        <h3>Candidate Registration</h3>
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+ 
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required><br>
+
+        <label for="qualification">Qualification:</label>
+        <input type="text" id="qualification" name="qualification" required><br>
+
+        <label for="github">GitHub ID:</label>
+        <input type="text" id="github" name="github"><br>
+
+        <label for="mobile">Mobile Number:</label>
+        <input type="text" id="mobile" name="mobile" required pattern="\d{10}" title="Please enter a valid 10-digit mobile number"><br>
+
+        <button type="submit">Register</button>
+        <div id="errorMessage" class="error-message">{{.ErrorMessage}}</div>
+    </form>
+</body>
+</html>

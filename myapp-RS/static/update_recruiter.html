@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Recruiter</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    
+    <form action="/submit_update_recruiter" method="post">
+        <h1>Update Recruiter</h1>
+        <input type="hidden" name="email" value="{{.Email}}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{.Name}}" required><br>
+        <label for="post">Post:</label>
+        <input type="text" id="post" name="post" value="{{.Post}}" required><br>
+        <label for="company">Company:</label>
+        <input type="text" id="company" name="company" value="{{.Company}}" required><br>
+        <label for="experience">Experience:</label>
+        <input type="text" id="experience" name="experience" value="{{.Experience}}" required><br>
+        <label for="branch">Branch:</label>
+        <input type="text" id="branch" name="branch" value="{{.Branch}}" required><br>
+        <label for="mobile">Mobile:</label>
+        <input type="text" id="mobile" name="mobile" value="{{.Mobile}}" required><br>
+        <input type="submit" value="Update Recruiter">
+    </form>
+</body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    body { 
+        font-family: 'Arial', sans-serif;
+    background: url('/static/images/background1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    }
+    
+    h1 {
+        margin-bottom: 10px;
+        padding: 10px;
+        text-align: justify;
+        font-size: 2.5em;
+        color: black;
+    }
+    
+    form {
+        background:#258580;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 400px;
+        backdrop-filter: blur(10px);
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"] {
+        width: calc(100% - 20px);
+        padding: 5px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 1em;
+    }
+    
+    button {
+        width: 100%;
+        padding: 5px;
+        border: none;
+        border-radius: 5px;
+        background: linear-gradient(to right, #6a11cb, #2575fc);
+        color: rgba(255, 255, 255, 0.1);
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    button:hover {
+        background: #6a11cb;
+    }
+    
+    a {
+        display: inline-block;
+        margin-top: 10px;
+        color: #fff;
+        text-decoration: none;
+        font-size: 1em;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+</html>

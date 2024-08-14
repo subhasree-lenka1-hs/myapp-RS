@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Job</title>
+    <link rel="stylesheet" href="/static/css/candidate.css">
+</head>
+<body>
+    <h1>Apply for Job</h1>
+
+    <div class="container">
+        <div class="content">
+            <form action="/submit_application" method="post">
+                <input type="hidden" name="jobID" value="{{.JobID}}">
+                <input type="hidden" name="name" value="{{.Name}}">
+                <input type="hidden" name="email" value="{{.Email}}">
+                <input type="hidden" name="phone" value="{{.Phone}}">
+
+                <label for="resume">Resume URL:</label>
+                <input type="url" id="resume" name="resume" required>
+
+                <button type="submit" class="button">Submit Application</button>
+            </form>
+
+            <p><a href="/viewapplications" class="button">Back to Job Listings</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Job</title>
+</head>
+<body>
+    <form id="addJobForm" action="/addjob" method="POST">
+        <label for="jobTitle">Job Title:</label>
+        <input type="text" id="jobTitle" name="jobTitle"><br>
+        
+        <label for="company">Company:</label>
+        <input type="text" id="company" name="company"><br>
+        
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location"><br>
+        
+        <label for="salary">Salary:</label>
+        <input type="text" id="salary" name="salary"><br>
+        
+        <label for="jobDescription">Job Description:</label>
+        <textarea id="jobDescription" name="jobDescription"></textarea><br>
+        
+        <label for="applicationDeadline">Application Deadline:</label>
+        <input type="date" id="applicationDeadline" name="applicationDeadline"><br>
+        
+        <div id="errorMessage" style="color: red; display: none;">All fields are required.</div>
+        <input type="submit" value="Add Job">
+    </form>
+
+    <script>
+        document.getElementById('addJobForm').addEventListener('submit', function(event) {
+            var isValid = true;
+            var inputs = document.querySelectorAll('#addJobForm input, #addJobForm textarea');
+            
+            inputs.forEach(function(input) {
+                if (input.value.trim() === '') {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    body { 
+        font-family: 'Arial', sans-serif;
+        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    h1 {
+        margin-bottom: 20px;
+        padding: 20px;
+        text-align: justify;
+        font-size: 2.5em;
+        color: #fff;
+    }
+    
+    form {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        margin-top: 10px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 400px;
+        backdrop-filter: blur(10px);
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 1em;
+    }
+    
+    textarea {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 1em;
+    }
+    
+    button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background: linear-gradient(to right, #6a11cb, #2575fc);
+        color: #fff;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    
+    button:hover {
+        background: #6a11cb;
+    }
+    
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        color: #fff;
+        text-decoration: none;
+        font-size: 1em;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+</html>

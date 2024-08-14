@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Applications</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Job Applications</h1>
+            <p><a href="/admin_dashboard" class="button">Back to Dashboard</a></p>
+
+        </header>
+
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Application ID</th>
+                        <th>Job Title</th>
+                        <th>Candidate Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Application Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .}}
+                    <tr>
+                        <td>{{.ApplicationID}}</td>
+                        <td>{{.JobTitle}}</td>
+                        <td>{{.CandidateName}}</td>
+                        <td>{{.Email}}</td>
+                        <td>{{.Mobile}}</td>
+                        <td>{{.ApplicationDate}}</td>
+                        <td>
+                            <form method="post" action="/view_applications" class="action-form">
+                                <input type="hidden" name="applicationID" value="{{.ApplicationID}}">
+                                <button type="submit" name="action" value="accept" class="accept-btn">Accept</button>
+                                <button type="submit" name="action" value="reject" class="reject-btn">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        /* background: rgba(255, 255, 255, 0.9);  */
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        width: 100%;
+        padding: 20px;
+        margin: 10px;
+        box-sizing: border-box;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2em;
+        color: #333;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    table th,
+    table td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ccc;
+    }
+
+    table th {
+        background-color: #000;
+        color: #fff;
+    }
+
+    table td {
+        background-color: #f9f9f9;
+    }
+
+    table tr:hover td {
+        background-color: #f1f1f1;
+    }
+
+    .action-form {
+        display: inline-block;
+    }
+
+    .accept-btn,
+    .reject-btn {
+        font-size: 0.9em;
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .accept-btn {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .accept-btn:hover {
+        background-color: #218838;
+    }
+
+    .reject-btn {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .reject-btn:hover {
+        background-color: #c82333;
+    }
+
+    @media (max-width: 1024px) {
+        header h1 {
+            font-size: 1.8em;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+        }
+
+        .accept-btn,
+        .reject-btn {
+            font-size: 0.8em;
+            padding: 6px 12px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        header h1 {
+            font-size: 1.5em;
+        }
+
+        table th,
+        table td {
+            padding: 8px;
+        }
+
+        .accept-btn,
+        .reject-btn {
+            font-size: 0.8em;
+            padding: 6px 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        header h1 {
+            font-size: 1.2em;
+        }
+
+        table th,
+        table td {
+            padding: 6px;
+        }
+
+        .accept-btn,
+        .reject-btn {
+            font-size: 0.7em;
+            padding: 4px 8px;
+        }
+    }
+
+    @media (max-width: 360px) {
+        header h1 {
+            font-size: 1em;
+        }
+
+        .container {
+            padding: 15px;
+            margin: 5px;
+        }
+
+        table th,
+        table td {
+            padding: 4px;
+        }
+
+        .accept-btn,
+        .reject-btn {
+            font-size: 0.6em;
+            padding: 3px 6px;
+        }
+    }
+</style>
+
+</html>

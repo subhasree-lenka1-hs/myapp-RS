@@ -1,0 +1,24 @@
+[33m9f28ca8[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mfeature/new-feature[m[33m)[m HEAD@{0}: checkout: moving from main1 to main
+[33m346eeac[m[33m ([m[1;32mmain1[m[33m)[m HEAD@{1}: checkout: moving from main to main1
+[33m9f28ca8[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mfeature/new-feature[m[33m)[m HEAD@{2}: reset: moving to 9f28ca8
+[33m6925c08[m HEAD@{3}: commit: Recover deleted files
+[33m9eb929e[m HEAD@{4}: checkout: moving from main to main
+[33m9eb929e[m HEAD@{5}: checkout: moving from feature/new-feature to main
+[33m9f28ca8[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mfeature/new-feature[m[33m)[m HEAD@{6}: checkout: moving from main to feature/new-feature
+[33m9eb929e[m HEAD@{7}: checkout: moving from main to main
+[33m9eb929e[m HEAD@{8}: commit (merge): Merge branch 'origin/main' into main
+[33m9f28ca8[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mfeature/new-feature[m[33m)[m HEAD@{9}: checkout: moving from new to main
+[33mc938eb7[m[33m ([m[1;31morigin/new[m[33m, [m[1;32mnew[m[33m)[m HEAD@{10}: checkout: moving from new to new
+[33mc938eb7[m[33m ([m[1;31morigin/new[m[33m, [m[1;32mnew[m[33m)[m HEAD@{11}: commit: Add new feature
+[33m9f28ca8[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mfeature/new-feature[m[33m)[m HEAD@{12}: checkout: moving from feature/new-feature to new
+[33m9f28ca8[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mfeature/new-feature[m[33m)[m HEAD@{13}: checkout: moving from main to feature/new-feature
+[33m9f28ca8[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mfeature/new-feature[m[33m)[m HEAD@{14}: commit: Initial commit
+[33m346eeac[m[33m ([m[1;32mmain1[m[33m)[m HEAD@{15}: checkout: moving from main1 to main
+[33m346eeac[m[33m ([m[1;32mmain1[m[33m)[m HEAD@{16}: checkout: moving from main to main1
+[33m346eeac[m[33m ([m[1;32mmain1[m[33m)[m HEAD@{17}: commit: Initial commit
+[33maa51e55[m HEAD@{18}: Branch: renamed refs/heads/main to refs/heads/main
+[33maa51e55[m HEAD@{20}: checkout: moving from origin/main to main
+[33m6d32404[m[33m ([m[1;31morigin/main[m[33m, [m[1;32morigin/main[m[33m)[m HEAD@{21}: checkout: moving from 6d324042fd54bf0d81007830661e88e25df154bf to origin/main
+[33m6d32404[m[33m ([m[1;31morigin/main[m[33m, [m[1;32morigin/main[m[33m)[m HEAD@{22}: checkout: moving from main to origin/main
+[33maa51e55[m HEAD@{23}: checkout: moving from main to main
+[33maa51e55[m HEAD@{24}: commit (initial): Added the backend setup and started the design for frontend.

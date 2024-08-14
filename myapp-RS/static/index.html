@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerConnect</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('/static/images/background1.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-form h2 {
+            margin: 0;
+            font-size: 2em;
+            color: #14a0b1;
+        }
+
+        .login-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            color: #14a0b1;
+        }
+
+        .login-form input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #14a0b1;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-form button:hover {
+            background-color: #14a0b1;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 15px;
+            color: #14a0b1;
+        }
+
+        .signup-link a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 1em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Welcome To CareerConnect</h1>
+        <div class="login-form">
+            <h2>Login</h2>
+            <form id="loginForm" action="/login" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <button type="submit">Login</button>
+            </form>
+            <p class="signup-link">Do not have an account? <a href="/register_candidate">Sign up here</a></p>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const errorMessage = getQueryParam('error');
+            if (errorMessage === '1') {
+                document.getElementById('errorMessage').textContent = 'Invalid username or password.';
+            }
+        });
+    </script>
+</body>
+</html>

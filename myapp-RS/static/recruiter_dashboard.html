@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('/static/images/background1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1200px;
+            backdrop-filter: blur(8px);
+            height: 80vh;
+        }
+    
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .main-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+    
+        h1, h2 {
+            margin: 0;
+            color: #333;
+        }
+        
+        h1 {
+            font-size: 2em;
+        }
+        
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+        }
+        
+        th {
+            background-color: #258580;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        a.button {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #18b4cd;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        
+        a.button:hover {
+            background-color: #14a0b1;
+            transform: scale(1.02);
+        }
+        
+        a.button:active {
+            background-color: #11888e;
+        }
+        
+        p {
+            text-align: center;
+        }
+        
+        .messages {
+            margin-top: 20px;
+        }
+        
+        .messages ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .messages li {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        
+        .messages li:last-child {
+            border-bottom: none;
+        }
+        
+        .no-messages {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+    
+        .reply-form {
+            display: none;
+            margin-top: 10px;
+        }
+    
+        .show {
+            display: block;
+        }
+    
+        .button-group {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+    
+        .button-group a {
+            flex: 1;
+            text-align: center;
+        }
+    
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+    
+            .sidebar, .main-content {
+                padding: 15px;
+            }
+    
+            .sidebar {
+                order: 2;
+            }
+    
+            .main-content {
+                order: 1;
+            }
+    
+            h1 {
+                font-size: 1.5em;
+            }
+    
+            a.button {
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            body {
+                height: auto;
+                align-items: flex-start;
+                padding: 20px 0;
+            }
+    
+            .container {
+                grid-gap: 10px;
+                padding: 15px;
+            }
+    
+            h1 {
+                font-size: 1.2em;
+            }
+    
+            th, td {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+    
+            a.button {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+    
+    <script>
+        function toggleReplyForm(index) {
+            var form = document.getElementById('reply-form-' + index);
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Welcome, <strong>{{.Email}}</strong>!</h1>
+            <p>Email: {{.Email}}</p>
+           
+
+            <p><a href="/" class="button">Logout</a></p>
+        </div>
+
+        <div class="main-content">
+            <h2>Recruiter Details</h2>
+            <table>
+                <tr>
+                    <th>Post</th> 
+                    <td>{{.Post}}</td>
+                </tr>
+                <tr>
+                    <th>Company</th>
+                    <td>{{.Company}}</td>
+                </tr>
+                <tr>
+                    <th>Branch</th>
+                    <td>{{.Branch}}</td>
+                </tr>
+                <tr>
+                    <th>Mobile</th>
+                    <td>{{.Mobile}}</td>
+                </tr>
+                <tr>
+                    <th>Experience</th>
+                    <td>{{.Experience}}</td>
+                </tr>
+            </table>
+            <div class="button-group">
+                <a href="/addjob" class="button">Add Job</a>
+                <a href="/myjobs" class="button">View My Jobs</a>
+                <a href="/candidates" class="button">View All Candidates</a>
+            </div>
+            <!-- Uncomment if you have messages to display -->
+            <!-- <div class="messages">
+                <h2>Messages from Admin</h2>
+                {{if .Messages}}
+                <ul>
+                    {{range $index, $msg := .Messages}}
+                    <li>
+                        <strong>From:</strong> {{$msg.Sender}}<br>
+                        <strong>Message:</strong> {{$msg.Content}}<br>
+                        <strong>Date:</strong> {{$msg.Date}}<br>
+                        <button type="button" onclick="toggleReplyForm({{$index}})">Reply</button>
+                        <form id="reply-form-{{$index}}" action="/send_reply" method="post" class="reply-form" style="display: none;">
+                            <input type="hidden" name="receiver" value="{{$msg.Sender}}">
+                            <input type="hidden" name="sender" value="{{$.Email}}">
+                            <textarea name="content" placeholder="Type your reply here..." required></textarea>
+                            <button type="submit" class="button">Send Reply</button>
+                        </form>
+                    </li>
+                    {{end}}
+                </ul>
+                {{else}}
+                    <p class="no-messages">No messages for you.</p>
+                {{end}}
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Send Message</title>
+    <link rel='stylesheet' href='/static/css/style.css'>
+</head>
+<form action="/send_message" method="post">
+    <input type="hidden" name="receiver" value="{{.Email}}">
+    <input type="hidden" name="sender" value="admin@123"> 
+    <label for="content">Message:</label>
+    <textarea id="content" name="content" rows="4" required></textarea>
+    <button type="submit">Send Message</button>
+</form>
+
+</html>

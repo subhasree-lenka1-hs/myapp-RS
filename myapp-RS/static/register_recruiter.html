@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Registration</title>
+    <link rel="stylesheet" href="css/register_recruiter.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body { 
+            font-family: 'Arial', sans-serif;
+        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90%;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+            padding: 10px;
+            text-align: justify;
+            font-size: 2.5em;
+            color: #258580;
+        }
+        
+        form {
+            background:#258580;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"] {
+            width: calc(100% - 20px);
+            padding: 5px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            font-size: 1em;
+        }
+        
+        button {
+            width: 100%;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        button:hover {
+            background: #6a11cb;
+        }
+        
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    
+    
+
+</head>
+<body>
+    <form id="registrationForm" action="/submit_recruiter_registration" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <h3>Recruiter Registration</h3>
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+ 
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <input type="checkbox" id="showPassword" onclick="togglePasswordVisibility()"> Show Password<br><br>
+
+        <label for="post">Post:</label>
+        <input type="text" id="post" name="post" required><br><br>
+
+        <label for="company">Company Name:</label>
+        <input type="text" id="company" name="company"><br><br>
+
+        <label for="experience">Experience (years):</label>
+        <input type="number" id="experience" name="experience" required min="0" step="1"><br><br>
+
+        <label for="branch">Branch:</label>
+        <select id="branch" name="branch" required>
+            <option value="it">IT</option>
+            <option value="non-it">Non-IT</option>
+        </select><br><br>
+
+        <label for="mobile">Mobile Number:</label>
+        <input type="text" id="mobile" name="mobile" required pattern="\d{10}" title="Please enter a valid 10-digit mobile number"><br><br>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

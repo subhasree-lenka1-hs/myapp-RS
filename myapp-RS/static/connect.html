@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Connect with {{.Name}}</title>
+    <link rel='stylesheet' href='/static/css/style.css'>
+</head>
+<body>
+    <div class="Connect-container">
+        <header>
+            <h1>Connect with {{.Name}}</h1>
+        </header>
+        <form action="/send_message" method="post">
+            <input type="hidden" name="receiver" value="{{.Email}}">
+            <input type="hidden" name="sender" value="admin@123">
+            <label for="content">Message:</label>
+            <textarea id="content" name="content" rows="4" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+        <p><a class="back-link" href='/view_recruiters'>Back to Recruiters</a></p>
+        <p><a class="view-messages-link" href='/view_messages?sender={{.Email}}'>View Messages from {{.Name}}</a></p>
+    </div>
+</body>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+    }
+
+    .Connect-container {
+        width: 80%;
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2em;
+        color: #333;
+    }
+
+    form {
+        margin: 20px 0;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        font-size: 1em;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .back-link,
+    .view-messages-link {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 1em;
+        transition: background-color 0.3s;
+        margin: 10px 0;
+    }
+
+    .back-link:hover,
+    .view-messages-link:hover {
+        background-color: #0056b3;
+    }
+</style>
+</html>

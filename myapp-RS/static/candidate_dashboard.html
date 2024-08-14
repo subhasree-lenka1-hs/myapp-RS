@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Dashboard</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="dashboard">
+            <div class="dashboard-left">
+                <h1>Welcome, <strong>{{.Name}}</strong>!</h1>
+                <div class="button-group">
+                    <p><a href="/" class="button">Logout</a></p>
+
+                </div>
+            </div>
+            <div class="dashboard-right">
+                <div id="messagesModal" class="messages-modal">
+                    <div class="messages-header">
+                        Your Messages
+                        <button onclick="closeMessages()" class="close-button">X</button>
+                    </div>
+                    <div id="messagesList" class="messages-list"></div>
+                    <button onclick="closeMessages()" class="close-button">Close</button>
+                </div>
+                <div class="content">
+                    <p>Email: {{.Email}}</p>
+                    <h2>Candidate Details</h2>
+                    <table>
+                        <tr>
+                            <th>Date of Birth</th>
+                            <td>{{.Dob}}</td>
+                        </tr>
+                        <tr>
+                            <th>Qualification</th>
+                            <td>{{.Qualification}}</td>
+                        </tr>
+                        <tr>
+                            <th>GitHub</th>
+                            <td>{{.GitHub}}</td>
+                        </tr>
+                        <tr>
+                            <th>Mobile</th>
+                            <td>{{.Mobile}}</td>
+                        </tr>
+                    </table>
+                    <form action="/delete_profile" method="POST">
+                        <input type="hidden" name="email" value="{{.Email}}">
+                        <button type="submit" class="button delete-button">Delete My Profile</button>
+                    </form>
+                </div>
+                <div class="button-group">
+                    <a href="/viewapplications" class="button">View All Applications</a>
+                    <a href="/view_applied_jobs" class="button">View Applied Applications</a>
+                    <a href="/edit_profile" class="button">Edit My Profile</a>
+                    <a href="#" class="button" onclick="viewMessages()">View All Messages</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const userEmail = await fetchUserEmail();
+            if (!userEmail) {
+                window.location.href = '/login';
+                return;
+            }
+            senderEmail = userEmail;
+            console.log('User email:', senderEmail);
+            initializeChat(userEmail);
+        });
+    
+        let socket = null;
+        let senderEmail = '';
+        const chatMessages = document.getElementById('chatMessages');
+        const chatHistory = {};
+    
+        async function fetchUserEmail() {
+            try {
+                const response = await fetch('/user-email');
+                const data = await response.json();
+                return data.email || '';
+            } catch (error) {
+                console.error('Failed to fetch user email:', error);
+                return '';
+            }
+        }
+    
+        async function fetchChatHistory(email) {
+            try {
+                const response = await fetch(`/fetch-chat-history?email=${encodeURIComponent(email)}`);
+                const messages = await response.json();
+                return messages;
+            } catch (error) {
+                console.error('Failed to fetch chat history:', error);
+                return [];
+            }
+        }
+    
+        async function initializeChat(email) {
+            senderEmail = email;
+            const wsUrl = `ws://localhost:8080/chat?email=${encodeURIComponent(senderEmail)}`;
+            socket = new WebSocket(wsUrl);
+    
+            socket.onopen = () => {
+                console.log('WebSocket connection established.');
+            };
+    
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.sender === senderEmail || data.recipient === senderEmail) {
+                        if (!chatHistory[data.recipient]) {
+                            chatHistory[data.recipient] = [];
+                        }
+                        chatHistory[data.recipient].push(data);
+    
+                        const messageDiv = document.createElement('div');
+                        messageDiv.textContent = `${data.sender === senderEmail ? 'You' : data.sender}: ${data.message}`;
+                        messageDiv.classList.add(data.sender === senderEmail ? 'sent-message' : 'received-message');
+                        chatMessages.appendChild(messageDiv);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                } catch (e) {
+                    console.error('Failed to parse message data:', e);
+                }
+            };
+    
+            socket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+    
+            socket.onclose = () => {
+                console.log('WebSocket connection closed.');
+            };
+        }
+    
+        function viewMessages() {
+            if (!senderEmail) {
+                console.error('User email is not defined');
+                return;
+            }
+    
+            fetch(`/get-messages?email=${encodeURIComponent(senderEmail)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`HTTP error! Status: ${response.status}, Response: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', data);
+    
+                    const messagesList = document.getElementById('messagesList');
+                    if (messagesList) {
+                        messagesList.innerHTML = '';
+    
+                        if (Array.isArray(data.messages)) {
+                            data.messages.forEach(message => {
+                                const messageDiv = document.createElement('div');
+                                messageDiv.classList.add('message-item');
+    
+                                const messageContent = document.createElement('div');
+                                messageContent.textContent = `${message.sender}: ${message.message}`;
+                                messageContent.classList.add('message-content');
+                                messageDiv.appendChild(messageContent);
+    
+                                if (message.sender !== senderEmail) {
+                                    const replyContainer = document.createElement('div');
+                                    replyContainer.classList.add('reply-container');
+    
+                                    const replyButton = document.createElement('button');
+                                    replyButton.textContent = 'Reply';
+                                    replyButton.classList.add('reply-button');
+                                    replyButton.onclick = () => openReplyInterface(message, replyButton);
+                                    replyContainer.appendChild(replyButton);
+    
+                                    messageDiv.appendChild(replyContainer);
+                                }
+    
+                                messagesList.appendChild(messageDiv);
+                            });
+                        } else {
+                            console.error('Unexpected data format:', data);
+                            messagesList.innerHTML = '<div>No messages available</div>';
+                        }
+    
+                        document.getElementById('messagesModal').classList.add('active');
+                    } else {
+                        console.error('Messages list element is not available.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching messages:', error);
+                });
+        }
+    
+        function openReplyInterface(message, replyButton) {
+            const existingReplyInput = replyButton.parentElement.querySelector('.reply-input');
+            if (existingReplyInput) {
+                existingReplyInput.remove();
+            }
+    
+            const replyContainer = replyButton.parentElement;
+            const replyInput = document.createElement('input');
+            replyInput.type = 'text';
+            replyInput.classList.add('reply-input');
+            replyInput.placeholder = `Reply to: ${message.message}`;
+    
+            const sendReplyButton = document.createElement('button');
+            sendReplyButton.textContent = 'Send Reply';
+            sendReplyButton.classList.add('send-reply-button');
+            sendReplyButton.onclick = () => sendReply(replyInput.value, message.sender);
+    
+            replyContainer.appendChild(replyInput);
+            replyContainer.appendChild(sendReplyButton);
+    
+            replyInput.focus();
+            const rect = replyContainer.getBoundingClientRect();
+            if (rect.bottom > window.innerHeight) {
+                window.scrollBy(0, rect.bottom - window.innerHeight + 20);
+            }
+        }
+    
+        async function sendReply(replyText, recipientEmail) {
+            if (!senderEmail) {
+                console.error('Sender email is not set.');
+                alert('Unable to send reply. Sender information is missing.');
+                return;
+            }
+    
+            if (replyText.trim()) {
+                const messageObject = {
+                    message: replyText,
+                    recipient: recipientEmail,
+                    sender: senderEmail,
+                    timestamp: new Date().toISOString()
+                };
+    
+                try {
+                    if (socket && socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify(messageObject));
+                        console.log('Message sent via WebSocket');
+                    } else {
+                        console.error('WebSocket is not connected.');
+                        alert('Unable to send message. WebSocket connection is not open.');
+                    }
+    
+                    const response = await fetch('/save_message', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(messageObject)
+                    });
+    
+                    if (response.ok) {
+                        console.log('Message saved successfully');
+                    } else {
+                        console.error('Failed to save message:', await response.text());
+                        alert('Failed to save message.');
+                    }
+                } catch (error) {
+                    console.error('Error sending reply:', error);
+                    alert('Error sending reply.');
+                }
+            } else {
+                alert('Reply text cannot be empty.');
+            }
+        }
+    
+        function closeMessages() {
+            document.getElementById('messagesModal').classList.remove('active');
+        }
+    </script>
+    
+    
+   
+   <style>
+    body {
+    font-family: 'Arial', sans-serif;
+    background: url('/static/images/background1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 1200px;
+}
+
+.dashboard-left, .dashboard-right {
+    padding: 20px;
+}
+
+.dashboard-left {
+    flex: 1;
+    border-right: 1px solid #e0e0e0;
+}
+
+.dashboard-right {
+    flex: 2;
+}
+
+/* Header and Button Styles */
+h1, h2 {
+    margin-top: 0;
+}
+
+.button-group a, .button-group button {
+    display: block;
+    background-color: #14a0b1;
+    color: #fff;
+    text-align: center;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 5px;
+    margin: 8px 0;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.button-group a:hover, .button-group button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* Messages Modal */
+.messages-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    background: #ffffff;
+    border-left: 1px solid #ddd;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.messages-modal.active {
+    transform: translateX(0);
+}
+
+.messages-header {
+    padding: 15px;
+    background: #14a0b1;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.messages-list {
+    padding: 15px;
+    height: calc(100% - 60px);
+    overflow-y: auto;
+}
+
+.message-item {
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sent-message {
+    background: #d4edda;
+    text-align: right;
+}
+
+.received-message {
+    background: #f8d7da;
+    text-align: left;
+}
+
+.message-content {
+    margin-bottom: 5px;
+}
+
+.reply-container {
+    margin-top: 10px;
+}
+
+.reply-button,
+.send-reply-button {
+    background: #14a0b1;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.reply-button:hover,
+.send-reply-button:hover {
+    background-color: #0056b3;
+}
+
+.reply-input {
+    width: calc(100% - 120px);
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.close-button {
+    background: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+    background: #5a6268;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: rgba(255, 255, 255, 0.1);
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .dashboard {
+        flex-direction: column;
+    }
+
+    .dashboard-left, .dashboard-right {
+        padding: 15px;
+    }
+
+    .dashboard-left {
+        border-right: none;
+    }
+
+    .messages-modal {
+        width: 300px;
+    }
+
+    .messages-header {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .dashboard {
+        flex-direction: column;
+    }
+
+    .dashboard-left, .dashboard-right {
+        padding: 10px;
+        border-right: none;
+    }
+
+    .messages-modal {
+        width: 100%;
+        right: 0;
+        border-left: none;
+        height: 50%;
+    }
+
+    .messages-header {
+        font-size: 16px;
+    }
+
+    .reply-input {
+        width: calc(100% - 100px);
+    }
+
+    .reply-button, .send-reply-button {
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 10px;
+        flex-direction: column;
+    }
+
+    .dashboard {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .dashboard-left, .dashboard-right {
+        padding: 8px;
+        border-right: none;
+    }
+
+    .messages-modal {
+        width: 100%;
+        height: 70%;
+        top: auto;
+        bottom: 0;
+        transform: translateY(100%);
+    }
+
+    .messages-modal.active {
+        transform: translateY(0);
+    }
+
+    .messages-header {
+        font-size: 14px;
+    }
+
+    .reply-input {
+        width: calc(100% - 80px);
+    }
+
+    .reply-button, .send-reply-button {
+        padding: 4px 8px;
+    }
+
+    table th, table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+   </style>
+
+</body>
+
+</html>

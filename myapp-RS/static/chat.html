@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Candidate</title>
+    <style>
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            padding-top: 50px;
+        }
+
+        .chat-header,
+        .chat-messages,
+        .chat-input {
+            margin-bottom: 10px;
+        }
+
+        .chat-messages {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #f9f9f9;
+        }
+
+        .chat-input input {
+            width: 80%;
+            padding: 5px;
+        }
+
+        .chat-input button {
+            padding: 5px;
+        }
+
+        .received-message {
+            color: #333;
+        }
+
+        .sent-message {
+            color: #007bff;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Chat with Candidate</h1>
+        <div id="chatModal" class="chat-modal">
+            <div id="chatHeader" class="chat-header"></div>
+            <div id="chatMessages" class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+                <button onclick="closeChat()">Close</button>
+            </div>
+        </div>
+        <p><a href="/all_candidates" class="button">Back to Candidates</a></p>
+    </div>
+    <script>
+        let socket;
+
+        function startChat(email) {
+            console.log('Starting chat with email:', email); 
+            const chatHeader = document.getElementById('chatHeader');
+            chatHeader.textContent = `Chat with ${email}`;
+
+            if (socket) {
+                console.log('Closing existing WebSocket connection.');
+                socket.close();
+            }
+            try {
+                socket = new WebSocket(`ws://localhost:8080/chat?email=${email}`); 
+                console.log('WebSocket connection initialized.');
+            } catch (error) {
+                console.error('Error initializing WebSocket:', error);
+                return; 
+            }
+
+            socket.onmessage = function(event) {
+                console.log('Received message from WebSocket:', event.data); 
+                const chatMessages = document.getElementById('chatMessages');
+                const message = document.createElement('div');
+                message.textContent = event.data;
+                message.classList.add('received-message');
+                chatMessages.appendChild(message);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            socket.onopen = function() {
+                console.log('WebSocket connection opened.');
+
+                fetch(`/get_previous_messages?email=${email}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Previous messages fetched:', data);
+                        const chatMessages = document.getElementById('chatMessages');
+                        data.messages.forEach(msg => {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.textContent = `${msg.sender}: ${msg.text}`;
+                            messageDiv.classList.add(msg.sender === 'You' ? 'sent-message' : 'received-message');
+                            chatMessages.appendChild(messageDiv);
+                        });
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching previous messages:', error);
+                    });
+            };
+
+            socket.onclose = function() {
+                console.log('WebSocket connection closed.');
+            };
+
+            socket.onerror = function(error) {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            if (socket && message.trim()) {
+                console.log('Sending message through WebSocket:', message); 
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = `You: ${message}`;
+                messageDiv.classList.add('sent-message');
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                socket.send(message);
+                messageInput.value = '';
+            } else {
+                console.log('Cannot send an empty message or no WebSocket connection.');
+            }
+        }
+
+        function closeChat() {
+            if (socket) {
+                console.log('Closing WebSocket connection.');
+                socket.close();
+            }
+          
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const email = params.get('email');
+            if (email) {
+                startChat(email);
+            } else {
+                console.error('No email parameter found in the URL.');
+               
+            }
+        });
+    </script>
+</body>
+
+</html>

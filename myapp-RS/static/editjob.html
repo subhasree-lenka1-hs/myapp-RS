@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job</title>
+    <link rel="stylesheet" href="/static/css/candidate.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body { 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('/static/images/background1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2em;
+            color: black;
+        }
+        
+        form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: black;
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            font-size: 1em;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+        
+        button,
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        button:hover,
+        input[type="submit"]:hover {
+            background: #6a11cb;
+        }
+        
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+            text-align: center;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <form action="/editjob/{{.ID}}" method="post">
+        <h1>Edit Job</h1>
+        <label for="jobTitle">Job Title:</label>
+        <input type="text" id="jobTitle" name="jobTitle" value="{{.JobTitle}}" required>
+        <label for="company">Company:</label>
+        <input type="text" id="company" name="company" value="{{.Company}}" required>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="{{.Location}}" required>
+        <label for="salary">Salary:</label>
+        <input type="text" id="salary" name="salary" value="{{.Salary}}" required>
+        <label for="jobDescription">Job Description:</label>
+        <textarea id="jobDescription" name="jobDescription" required>{{.JobDescription}}</textarea>
+        <label for="applicationDeadline">Application Deadline:</label>
+        <input type="date" id="applicationDeadline" name="applicationDeadline" value="{{.ApplicationDeadline}}" required>
+        <input type="submit" value="Update Job">
+        <p><a href="/myjobs" class="button">Back to My Jobs</a></p>
+    </form>
+</body>
+</html>

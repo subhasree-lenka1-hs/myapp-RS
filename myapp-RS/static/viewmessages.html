@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages from {{.Sender}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('/static/images/background1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9); 
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 800px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .message {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .message:last-child {
+            border-bottom: none;
+        }
+        .message strong {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Messages from {{.Sender}}</h1>
+        {{if .Messages}}
+            {{range .Messages}}
+                <div class="message">
+                    <strong>From:</strong> {{.Sender}}<br>
+                    <strong>Message:</strong> {{.Content}}<br>
+                    <strong>Date:</strong> {{.Date}}
+                </div>
+            {{end}}
+        {{else}}
+            <p>No messages found.</p>
+        {{end}}
+        <button onclick="location.href='/view_recruiters'">Back</button>
+    </div>
+</body>
+</html>
