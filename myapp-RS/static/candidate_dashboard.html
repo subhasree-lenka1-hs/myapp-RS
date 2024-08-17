@@ -72,12 +72,12 @@
             console.log('User email:', senderEmail);
             initializeChat(userEmail);
         });
-
+    
         let socket = null;
         let senderEmail = '';
         const chatMessages = document.getElementById('messagesList'); // Updated to match HTML ID
         const chatHistory = {};
-
+    
         async function fetchUserEmail() {
             try {
                 const response = await fetch('/user-email');
@@ -88,7 +88,7 @@
                 return '';
             }
         }
-
+    
         async function fetchChatHistory(email) {
             try {
                 const response = await fetch(`/fetch-chat-history?email=${encodeURIComponent(email)}`);
@@ -99,16 +99,16 @@
                 return [];
             }
         }
-
+    
         async function initializeChat(email) {
             senderEmail = email;
             const wsUrl = `ws://localhost:8080/chat?email=${encodeURIComponent(senderEmail)}`;
             socket = new WebSocket(wsUrl);
-
+    
             socket.onopen = () => {
                 console.log('WebSocket connection established.');
             };
-
+    
             socket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
@@ -117,33 +117,47 @@
                             chatHistory[data.recipient] = [];
                         }
                         chatHistory[data.recipient].push(data);
-
+    
                         const messageDiv = document.createElement('div');
                         messageDiv.textContent = `${data.sender === senderEmail ? 'You' : data.sender}: ${data.message}`;
                         messageDiv.classList.add(data.sender === senderEmail ? 'sent-message' : 'received-message');
                         chatMessages.appendChild(messageDiv);
+    
+                        if (data.sender !== senderEmail) {
+                            const replyContainer = document.createElement('div');
+                            replyContainer.classList.add('reply-container');
+    
+                            const replyButton = document.createElement('button');
+                            replyButton.textContent = 'Reply';
+                            replyButton.classList.add('reply-button');
+                            replyButton.onclick = () => openReplyInterface(data, replyButton);
+    
+                            replyContainer.appendChild(replyButton);
+                            messageDiv.appendChild(replyContainer);
+                        }
+    
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     }
                 } catch (e) {
                     console.error('Failed to parse message data:', e);
                 }
             };
-
+    
             socket.onerror = (error) => {
                 console.error('WebSocket error:', error);
             };
-
+    
             socket.onclose = () => {
                 console.log('WebSocket connection closed.');
             };
         }
-
+    
         function viewMessages() {
             if (!senderEmail) {
                 console.error('User email is not defined');
                 return;
             }
-
+    
             fetch(`/get-messages?email=${encodeURIComponent(senderEmail)}`)
                 .then(response => {
                     if (!response.ok) {
@@ -155,41 +169,41 @@
                 })
                 .then(data => {
                     console.log('Received data:', data);
-
+    
                     const messagesList = document.getElementById('messagesList');
                     if (messagesList) {
                         messagesList.innerHTML = '';
-
+    
                         if (Array.isArray(data.messages)) {
                             data.messages.forEach(message => {
                                 const messageDiv = document.createElement('div');
                                 messageDiv.classList.add('message-item');
-
+    
                                 const messageContent = document.createElement('div');
                                 messageContent.textContent = `${message.sender}: ${message.message}`;
                                 messageContent.classList.add('message-content');
                                 messageDiv.appendChild(messageContent);
-
+    
                                 if (message.sender !== senderEmail) {
                                     const replyContainer = document.createElement('div');
                                     replyContainer.classList.add('reply-container');
-
+    
                                     const replyButton = document.createElement('button');
                                     replyButton.textContent = 'Reply';
                                     replyButton.classList.add('reply-button');
                                     replyButton.onclick = () => openReplyInterface(message, replyButton);
                                     replyContainer.appendChild(replyButton);
-
+    
                                     messageDiv.appendChild(replyContainer);
                                 }
-
+    
                                 messagesList.appendChild(messageDiv);
                             });
                         } else {
                             console.error('Unexpected data format:', data);
                             messagesList.innerHTML = '<div>No messages available</div>';
                         }
-
+    
                         document.getElementById('messagesModal').classList.add('active');
                     } else {
                         console.error('Messages list element is not available.');
@@ -199,41 +213,41 @@
                     console.error('Error fetching messages:', error);
                 });
         }
-
+    
         function openReplyInterface(message, replyButton) {
             const existingReplyInput = replyButton.parentElement.querySelector('.reply-input');
             if (existingReplyInput) {
                 existingReplyInput.remove();
             }
-
+    
             const replyContainer = replyButton.parentElement;
             const replyInput = document.createElement('input');
             replyInput.type = 'text';
             replyInput.classList.add('reply-input');
             replyInput.placeholder = `Reply to: ${message.message}`;
-
+    
             const sendReplyButton = document.createElement('button');
             sendReplyButton.textContent = 'Send Reply';
             sendReplyButton.classList.add('send-reply-button');
             sendReplyButton.onclick = () => sendReply(replyInput.value, message.sender);
-
+    
             replyContainer.appendChild(replyInput);
             replyContainer.appendChild(sendReplyButton);
-
+    
             replyInput.focus();
             const rect = replyContainer.getBoundingClientRect();
             if (rect.bottom > window.innerHeight) {
                 window.scrollBy(0, rect.bottom - window.innerHeight + 20);
             }
         }
-
+    
         async function sendReply(replyText, recipientEmail) {
             if (!senderEmail) {
                 console.error('Sender email is not set.');
                 alert('Unable to send reply. Sender information is missing.');
                 return;
             }
-
+    
             if (replyText.trim()) {
                 const messageObject = {
                     message: replyText,
@@ -241,7 +255,7 @@
                     sender: senderEmail,
                     timestamp: new Date().toISOString()
                 };
-
+    
                 try {
                     if (socket && socket.readyState === WebSocket.OPEN) {
                         socket.send(JSON.stringify(messageObject));
@@ -250,7 +264,7 @@
                         console.error('WebSocket is not connected.');
                         alert('Unable to send message. WebSocket connection is not open.');
                     }
-
+    
                     const response = await fetch('/save_message', {
                         method: 'POST',
                         headers: {
@@ -258,7 +272,7 @@
                         },
                         body: JSON.stringify(messageObject)
                     });
-
+    
                     if (response.ok) {
                         console.log('Message saved successfully');
                     } else {
@@ -273,12 +287,12 @@
                 alert('Reply text cannot be empty.');
             }
         }
-
+    
         function closeMessages() {
             document.getElementById('messagesModal').classList.remove('active');
         }
-
     </script>
+    
 
 
 
